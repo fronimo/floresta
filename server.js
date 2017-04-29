@@ -14,11 +14,9 @@ var client = new pg.Client({
     });
 
 //conect to postgrest
-client.on('drain', client.end.bind(client));
+//client.on('drain', client.end.bind(client));
 client.connect();
 
-var airportQuery = client.query("select a.name, a.country, a.city, ST_Distance(ST_GeomFromText('POINTZ( -16.3475995 -71.5606504 2335 )' ), a.location) as distance from station as a where ST_DWithin( ST_GeomFromText('POINTZ( -16.3475995 -71.5606504 2335 )' ), a.location, 200000) order by distance;");
-console.log(airportQuery);
 
 // Initialize server
 var server = express();
@@ -26,20 +24,25 @@ var server = express();
 // Setup statics middleware
 server.use('/', express.static(__dirname+'/public'));
 
-
+  
 
 
 
 // Setup routes
 server.get('/api/closest-airport', function (req, res) {
-    // Query
-    // ...
-    res.json({
-        id: 'asdasd',
-        name: 'asdjhaksd'
+    client.query("select a.id, a.name, a.country, a.city, ST_Distance(ST_GeomFromText('POINTZ( "+req.query.lat+" "+req.query.lng+" 2335 )' ), a.location) as distance from station as a where ST_DWithin( ST_GeomFromText('POINTZ( "+req.query.lat+" "+req.query.lng+" 2335 )' ), a.location, 200000) order by distance;", function(err, results){
+      if(err){
+        res.status(500);
+        res.send(err);
+        res.end();
+        return;
+      }
+      res.send(results.rows[0] || {});
+      
+      res.end();
+      
     });
-    res.send(airportQuery);
-    res.end();
+
 });
 
 // Start server

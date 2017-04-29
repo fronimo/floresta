@@ -3,7 +3,7 @@ function init () {
     // Setup Google Map
     var map = new google.maps.Map(document.getElementsByClassName('map-filter')[0], {
         zoom: 13,
-        center: { lat: 59.325, lng: 18.070 }
+        center: { lat: -16.344812, lng: -71.56799 }
     });
 
     // Load closest airport
@@ -20,14 +20,14 @@ function init () {
         map: map,
         draggable: true,
         animation: google.maps.Animation.DROP,
-        position: { lat: 59.327, lng: 18.067 }
+        position: { lat: -16.344812, lng: -71.56799 }
     });
     markers.b = new google.maps.Marker({
         label: 'B',
         map: map,
         draggable: true,
         animation: google.maps.Animation.DROP,
-        position: { lat: 59.327, lng: 18.061 }
+        position: { lat: -16.344812, lng: -71.56799 }
     });
 
     // Setup markers listeners
