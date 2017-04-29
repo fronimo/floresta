@@ -1,0 +1,32 @@
+body {
+    padding: 0px;
+    margin: 0px;
+}
+
+.title {
+    position: absolute;
+    top: 15px;
+    width: 100%;
+    text-align: center;
+    font-family: Arial;
+    color: #333;
+    font-size: 40px;
+}
+
+.map-filter {
+    position: absolute;
+    left: 0px;
+    top: 120px;
+    width: 100%;
+    height: 40%;
+    background: #EEE;
+}
+
+.results-container {
+    position: absolute;
+    left: 0px;
+    top: calc( 40% + 120px );
+    width: 100%;
+    height: calc( 100% - 40% - 120px );
+    background: #FFF;
+}
