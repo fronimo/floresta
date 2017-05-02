@@ -25,12 +25,12 @@ var server = express();
 server.use('/', express.static(__dirname+'/public'));
 
   
-
+//var airportQuery = client.query("select distinct a.name, a.Country from flights as a inner join sourceStation as ss on a.source_airport_id=ss.id inner join destinationStation as ds on a.destination_airport_id = ds.id where ss.id=2805 and ds.id=6073");
 
 
 // Setup routes
 server.get('/api/closest-airport', function (req, res) {
-    client.query("select a.id, a.name, a.country, a.city, ST_Distance(ST_GeomFromText('POINTZ( "+req.query.lat+" "+req.query.lng+" 2335 )' ), a.location) as distance from station as a where ST_DWithin( ST_GeomFromText('POINTZ( "+req.query.lat+" "+req.query.lng+" 2335 )' ), a.location, 200000) order by distance;", function(err, results){
+    client.query("select a.id, a.name, a.country, a.city, ST_Distance(ST_GeomFromText('POINTZ( "+req.query.lat+" "+req.query.lng+" 2335 )' ), a.location) as distance from station as a where ST_DWithin( ST_GeomFromText('POINTZ( "+req.query.lat+" "+req.query.lng+" 2335 )' ), a.location, 200000) order by distance;", function(err, results) {
       if(err){
         res.status(500);
         res.send(err);
@@ -38,10 +38,23 @@ server.get('/api/closest-airport', function (req, res) {
         return;
       }
       res.send(results.rows[0] || {});
-      
       res.end();
       
     });
+
+});
+
+server.get('/api/flights', function (req, res) {
+  client.query("select distinct a.name, a.Country from flights as a inner join sourceStation as ss on a.source_airport_id=ss.id inner join destinationStation as ds on a.destination_airport_id = ds.id where ss.id="+req.query.id1+" and ds.id="+req.query.id2+";", function(err, results) {
+    if(err){
+        res.status(500);
+        res.send(err);
+        res.end();
+        return;
+      }
+      res.send(results.rows);
+      res.end();
+  });
 
 });
 

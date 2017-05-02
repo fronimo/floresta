@@ -2,7 +2,7 @@ function init () {
 
     // Setup Google Map
     var map = new google.maps.Map(document.getElementsByClassName('map-filter')[0], {
-        zoom: 13,
+        zoom: 5,
         center: { lat: -16.344812, lng: -71.56799 }
     });
 
@@ -13,8 +13,16 @@ function init () {
         });
     }
 
+    // Load flights to airports
+    var flightsToAirports = function (id1, id2, callback){
+        $.get('/api/flights?id1='+id1+'&id2='+id2, function (body) {
+            callback(body);
+        });
+    }
+
     // Setup markers
     var markers = {};
+    var airports = {};
     markers.a = new google.maps.Marker({
         label: 'A',
         map: map,
@@ -37,6 +45,23 @@ function init () {
             lng: markers.a.getPosition().lng()
         }, function (airport) {
             console.log(airport);
+            airports.a = airport;
+            if(airports.a && airports.b) {
+                flightsToAirports(airports.a.id, airports.b.id, function(flights) {
+                    console.log(flights);
+                    var my_table = document.createElement("table");
+                    var container = document.getElementsByClassName("results-container")[0];
+                    container.innerHTML = "";
+                    container.appendChild(my_table);
+                    for(var i = 0; i < flights.length; i++) {
+                        var my_tr = document.createElement("tr");
+                        var my_td = document.createElement("td");
+                        my_td.innerHTML = flights[i].name;
+                        my_tr.appendChild(my_td);
+                        my_table.appendChild(my_tr);
+                    }
+                });
+            }
         })
     })
     markers.b.addListener('dragend', function () {
@@ -45,7 +70,19 @@ function init () {
             lng: markers.b.getPosition().lng()
         }, function (airport) {
             console.log(airport);
+            airports.b = airport;
+            if(airports.a && airports.b) {
+                flightsToAirports(airports.a.id, airports.b.id, function(flights) {
+                    console.log(flights);
+                });
+            }
         })
     })
+
+    /*var my_table = document.createElement("table");
+    var container = document.getElementsByClassName("results-container")[0];
+*/
+//    container.appendChild(my_table);
+
 
 }
